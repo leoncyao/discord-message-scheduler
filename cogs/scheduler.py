@@ -5,6 +5,9 @@ Scheduler category and commands.
 """
 from __future__ import annotations
 
+
+import tabulate
+import pandas as pd
 import asyncio
 import heapq
 import logging
@@ -14,6 +17,13 @@ from dataclasses import dataclass
 from math import ceil
 from secrets import token_hex
 from typing import TYPE_CHECKING, NamedTuple, Type, Literal, cast, TypeAlias, Any
+import json
+import shutil
+
+from dateutil import parser
+
+
+import datetime
 
 import aiosqlite
 import arrow
@@ -364,13 +374,17 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
         message: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
             label="Message",
             style=discord.TextStyle.paragraph,
-            required=True,
+            required=False,
             max_length=1000,
-            default=message_default,
+            # default=message_default,
+            default="my test "
         )
         time: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
-            label="Scheduled Time (MM/DD/YY HH:MM:SS)", required=True, max_length=100, default=time_default
+            label="Scheduled Time (MM/DD/YY HH:MM:SS)", required=False, max_length=100, default="in 1 seconds"
         )
+        # time: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
+        #     label="Scheduled Time (MM/DD/YY HH:MM:SS)", required=False, max_length=100, default=time_default
+        # )
         timezone: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
             label="Timezone (UTC offset +/-HH:MM)", required=False, max_length=100, default=timezone_default
         )
@@ -467,6 +481,7 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
 
             repeat = _parse_repeat(self.repeat.value)
             return SanitizedScheduleEvent(interaction.user, self.channel, self.message.value, time, repeat)
+            # return SanitizedScheduleEvent(interaction.user, self.channel,  "modding ", time, repeat)
 
         @property
         def acceptable_formats(self) -> list[str]:
@@ -559,25 +574,25 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
                     if check:  # if pinging is a possibility
                         logger.info("Sending mention approval form.")
 
-                        embed = discord.Embed(
-                            title="This scheduled message contains mentions",
-                            description="Click **Yes** if the mentions should ping "
-                            "its members, otherwise click **No**.\n\n"
-                            "Alternatively, click **Edit** to revise your message.",
-                            colour=COLOUR,
-                        )
-                        embed.add_field(name="Message", value=event.message, inline=False)
-                        await interaction.response.send_message(
-                            embed=embed,
-                            view=ScheduleMentionView(
-                                self.scheduler,
-                                interaction.user,
-                                self.channel,
-                                event,
-                                RawScheduleModalValues.from_modal(self),
-                            ),
-                            ephemeral=True,
-                        )
+                        # embed = discord.Embed(
+                        #     title="This scheduled message contains mentions",
+                        #     description="Click **Yes** if the mentions should ping "
+                        #     "its members, otherwise click **No**.\n\n"
+                        #     "Alternatively, click **Edit** to revise your message.",
+                        #     colour=COLOUR,
+                        # )
+                        # embed.add_field(name="Message", value=event.message, inline=False)
+                        # await interaction.response.send_message(
+                        #     embed=embed,
+                        #     view=ScheduleMentionView(
+                        #         self.scheduler,
+                        #         interaction.user,
+                        #         self.channel,
+                        #         event,
+                        #         RawScheduleModalValues.from_modal(self),
+                        #     ),
+                        #     ephemeral=True,
+                        # )
                         return
 
                 logger.info("Saving event: no mention or no perms.")
@@ -588,14 +603,14 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
 
             logger.info("Failed to save, sending edit form.")
             # If failed
-            embed.set_footer(text='Click the "Edit" button below to edit your form.')
-            await interaction.response.send_message(
-                embed=embed,
-                view=ScheduleEditView(
-                    self.scheduler, interaction.user, self.channel, RawScheduleModalValues.from_modal(self)
-                ),
-                ephemeral=True,
-            )
+            # embed.set_footer(text='Click the "Edit" button below to edit your form.')
+            # await interaction.response.send_message(
+            #     embed=embed,
+            #     view=ScheduleEditView(
+            #         self.scheduler, interaction.user, self.channel, RawScheduleModalValues.from_modal(self)
+            #     ),
+            #     ephemeral=True,
+            # )
 
     return ScheduleModal
 
@@ -1166,6 +1181,11 @@ class Scheduler(Cog):
         # Start the scheduler loop
         asyncio.create_task(self.scheduler_event_loop())
 
+        # PROBABLY SHOULD SERIALIZE THE CURRENT MESSAGE IM SENDING, THEN SEND IT .on
+
+        # then load it and send it with
+        # await self.scheduler.save_event(interaction, ScheduleEvent.from_sanitized(event, False))
+
     async def cog_unload(self) -> None:
         """
         This is called when cog is unloaded.
@@ -1647,7 +1667,8 @@ class Scheduler(Cog):
         else:
             embed.title = f"Scheduled Message Edited (Event ID #{event_db.id})"
             embed.set_footer(text=f"{event.author} has edited a scheduled message.")
-        await interaction.response.send_message(embed=embed)
+        # await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message("Days Since Tracker")
         return
 
     async def _save_event(
@@ -1825,10 +1846,52 @@ class Scheduler(Cog):
                 )
             allowed_mentions = discord.AllowedMentions.none()
         # channel has .send since invalid channel typed are filtered above with hasattr(channel, 'send')
-        await channel.send(  # type: ignore[reportGeneralTypeIssues]
-            event.message, allowed_mentions=allowed_mentions
-        )
-        # TODO: add a "report abuse" feature/command, save all sent msg in a db table with the id
+
+
+        f = open('test.json')
+        asdf = json.load(f)
+        f.close()
+
+        my_str = "Days_since: \n"
+
+        tasks = list(asdf.keys())
+
+
+        days_since_values = []
+        for i in range(len(tasks)):
+            task = tasks[i]       
+            days_for_task = asdf[task]
+            if len(days_for_task) > 0:
+                most_recent = parser.parse(days_for_task[-1])
+                days_since_values.append((datetime.datetime.today() - most_recent).days)
+            else:
+                days_since_values.append(0)
+
+
+        df = pd.DataFrame({'Task Names' : tasks, 'Days Since' : days_since_values})
+
+        my_str = "```" + tabulate.tabulate(df, headers='keys', tablefmt='psql') + "```"
+
+        logger.debug(my_str)
+
+        sent_message = await channel.send(my_str)
+        # NOTE I CAN ONLY SUPPORT 10 TASKS RIGHT NOW, need to find emojis for 2 digt numbers
+        for i in range(len(tasks)):
+            await sent_message.add_reaction(str(i) + '\N{combining enclosing keycap}')
+        # test = await self.bot.wait_for("reaction_add")
+
+        # strs = list(test[0].emoji)
+        # logger.debug(strs)
+        # index = int(''.join(strs[:-1]))
+        # clicked_task_name = tasks[index]
+        # asdf[clicked_task_name].append(datetime.datetime.today().isoformat())
+        # logger.debug(asdf)
+
+        # with open('test_copy.json', 'w') as outfile:
+        #     json.dump(asdf, outfile, indent=4)
+
+        # shutil.copyfile("test_copy.json", "test.json")
+
         return True
 
     async def _scheduler_event_loop(self) -> None:
@@ -1985,6 +2048,24 @@ class Scheduler(Cog):
         """
         await self._schedule_create(ctx, channel)
 
+
+
+    @commands.guild_only()
+    @schedule.command(name="createtest", ignore_extra=False, hidden=True)
+    @discord.app_commands.describe(channel="The channel for the scheduled message.")
+    async def schedule_createtest(
+        self,
+        ctx: commands.Context[Bot],
+        *,
+        channel: MessageableGuildChannel = None,  # type: ignore[reportGeneralTypeIssues]
+    ) -> None:
+        """Schedules a message for the future.
+        `channel` - The channel for the scheduled message.
+
+        You must have **send messages** permissions in the target channel.
+        """
+        await self._schedule_create(ctx, channel)
+
     @commands.guild_only()
     @schedule.command(name="list", ignore_extra=False)
     @discord.app_commands.describe(channel="The channel to list scheduled messages.")
@@ -2005,9 +2086,7 @@ class Scheduler(Cog):
     @schedule.command(name="show", aliases=["view"])
     @discord.app_commands.describe(event_id="The event ID of the scheduled message (see `/list`).")
     async def schedule_show(self, ctx: commands.Context[Bot], event_id: int) -> None:
-        """Show related info of a scheduled message event.
-        `event_id` - The event ID of the scheduled message (see `/list`).
-        """
+    
 
         logger.debug("%s is trying to show schedule %d.", ctx.author, event_id)
 

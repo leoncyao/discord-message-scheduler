@@ -1,0 +1,1 @@
+ps -aux | grep start_discord_bot
