@@ -46,11 +46,19 @@ class Bot(commands.Bot):
         self.version: str = toml_dict["project"]["version"]
         logger.info("[bold green]Bot version: %s[/bold green]", self.version, extra={"markup": True})
 
-    async def start(self, *args: Any, **kwargs: Any) -> None:
+    async def start(self, input_token=None, *args: Any, **kwargs: Any) -> None:
         """
         Start the bot using the TOKEN env.
         """
-        await super().start(TOKEN, *args, **kwargs)
+
+        # CHANGE BOT TOKEN HERE IN COMMAND LINE ARGUMENTS
+
+        if input_token:
+            logger.debug(f"USING input token: {input_token}")
+            await super().start(input_token, *args, **kwargs)
+        else:
+            logger.debug(f"USING env token: {TOKEN}")
+            await super().start(TOKEN, *args, **kwargs)
 
     async def setup_hook(self) -> None:
         """

@@ -16,31 +16,38 @@ import shutil
 
 logger = logging.getLogger(__name__)
 
+import argparse
+
+
+
 
 if __name__ == "__main__":
     bot = Bot()
 
+    parser = argparse.ArgumentParser(description='Start discord bot')
+    parser.add_argument('-s', '--token', type=str,
+                        help='discord token')
 
-    @bot.event
-    async def on_reaction_add(reaction, user):
+    # @bot.event
+    # async def on_reaction_add(reaction, user):
         
-        # logger.debug(str(user))
-        # 1203 is my bot id, i dont want my bot to trigger itself by reacting
-        if user.discriminator != '1203':
-            f = open('test.json')
-            tasks = json.load(f)
-            task_names = list(tasks.keys())
-            strs = list(reaction.emoji)
-            logger.debug(strs)
-            index = int(''.join(strs[:-1]))
-            clicked_task_name = task_names[index]
-            tasks[clicked_task_name].append(datetime.datetime.today().isoformat())
+    #     # logger.debug(str(user))
+    #     # 1203 is my bot id, i dont want my bot to trigger itself by reacting
+    #     if user.discriminator != '1203':
+    #         f = open('test.json')
+    #         tasks = json.load(f)
+    #         task_names = list(tasks.keys())
+    #         strs = list(reaction.emoji)
+    #         logger.debug(strs)
+    #         index = int(''.join(strs[:-1]))
+    #         clicked_task_name = task_names[index]
+    #         tasks[clicked_task_name].append(datetime.datetime.today().isoformat())
 
 
-            with open('test_copy.json', 'w') as outfile:
-                json.dump(tasks, outfile, indent=4)
+    #         with open('test_copy.json', 'w') as outfile:
+    #             json.dump(tasks, outfile, indent=4)
 
-            shutil.copyfile("test_copy.json", "test.json")
+    #         shutil.copyfile("test_copy.json", "test.json")
 
 
     async def main() -> None:
@@ -51,7 +58,7 @@ if __name__ == "__main__":
             await bot.load_extension("cogs.scheduler")
             await bot.load_extension("cogs.general")
             logger.info("[green]Starting bot.[/green]", extra={"markup": True})
-            await bot.start()
+            await bot.start(parser.parse_args().token)
 
     try:
         try:

@@ -1,0 +1,17 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
+    "explorer.sortOrder": "type",
+    "files.exclude": {
+        "*.lock" : true,
+        "*.toml" : true,
+        "*.yaml" : true,
+        ".idea" : true,
+        ".github" : true,
+        "discord": true,
+        "docs": true,
+        
+    }
+}

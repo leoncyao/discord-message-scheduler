@@ -1,95 +1,123 @@
-07:13:50,989 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
+09:34:07,663 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
              supported                                                          
-07:13:50,992 [INFO] Loading pyproject.toml to parse version.           bot.py:44
-07:13:50,993 [INFO] Bot version: 1.2.3                                 bot.py:47
-07:13:51,309 [INFO] Using SQLite version 3.37.2.               scheduler.py:1318
-07:13:51,316 [INFO] Loading scheduler cog.                     scheduler.py:1157
-07:13:51,323 [INFO] Updating DB version to 0                   scheduler.py:1205
-07:13:51,338 [INFO] Updating DB version to 1                   scheduler.py:1251
-07:13:51,343 [INFO] Populated 0 schedules.                     scheduler.py:1175
-07:13:51,352 [INFO] Starting bot.                                    start.py:53
-07:13:51,354 [INFO] logging in using static token                  client.py:628
-07:13:51,717 [INFO] Syncing slash commands (this may take a while).    bot.py:61
-07:13:51,964 [INFO] Slash commands synced.                             bot.py:67
-07:13:52,131 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
-07:13:52,297 [INFO] Shard ID None has connected to Gateway        gateway.py:546
-             (Session ID: d6b12ef497239e9188779295a640919e).                    
-07:13:54,307 [INFO] Bot is ready.                                      bot.py:82
-07:14:08,264 [INFO] Saving event: no mention or no perms.       scheduler.py:598
-07:14:08,279 [INFO] Added schedule into database with ID 1.    scheduler.py:1757
-07:14:08,281 [INFO] Message (preview): my test                 scheduler.py:1758
-             Guild: test                                                        
-             Channel: general                                                   
-             Author: neonleon#0                                                 
-             Repeat: None                                                       
-             Mention: False                                                     
-             Time: 2023-07-05T07:14:09.261463-04:00                             
-07:15:47,249 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
+09:34:07,667 [INFO] Loading pyproject.toml to parse version.           bot.py:44
+09:34:07,668 [INFO] Bot version: 1.2.3                                 bot.py:47
+09:34:07,942 [INFO] Using SQLite version 3.37.2.               scheduler.py:1320
+09:34:07,948 [INFO] Loading scheduler cog.                     scheduler.py:1159
+09:34:07,951 [INFO] Populated 0 schedules.                     scheduler.py:1177
+09:34:07,953 [INFO] Starting bot.                        start_discord_bot.py:60
+09:34:07,954 [INFO] logging in using static token                  client.py:628
+09:34:08,282 [INFO] Slash commands sync skipped.                       bot.py:83
+09:34:08,438 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
+09:34:08,651 [INFO] Shard ID None has connected to Gateway        gateway.py:546
+             (Session ID: 63509872f535e800abe2e837f2ca1c23).                    
+09:34:10,659 [INFO] Bot is ready.                                      bot.py:90
+09:36:36,361 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
              supported                                                          
-07:15:47,252 [INFO] Loading pyproject.toml to parse version.           bot.py:44
-07:15:47,253 [INFO] Bot version: 1.2.3                                 bot.py:47
-07:15:47,538 [INFO] Using SQLite version 3.37.2.               scheduler.py:1318
-07:15:47,543 [INFO] Loading scheduler cog.                     scheduler.py:1157
-07:15:47,546 [INFO] Populated 0 schedules.                     scheduler.py:1175
-07:15:47,547 [INFO] Starting bot.                        start_discord_bot.py:53
-07:15:47,548 [INFO] logging in using static token                  client.py:628
-07:15:47,828 [INFO] Syncing slash commands (this may take a while).    bot.py:61
-07:15:48,122 [INFO] Slash commands synced.                             bot.py:67
-07:15:48,285 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
-07:15:48,447 [INFO] Shard ID None has connected to Gateway        gateway.py:546
-             (Session ID: d9299a42626f5e97def257f27f3d77d2).                    
-07:15:50,461 [INFO] Bot is ready.                                      bot.py:82
-07:16:02,964 [INFO] Saving event: no mention or no perms.       scheduler.py:598
-07:16:02,981 [INFO] Added schedule into database with ID 2.    scheduler.py:1757
-07:16:02,983 [INFO] Message (preview): my test                 scheduler.py:1758
-             Guild: test                                                        
-             Channel: general                                                   
-             Author: neonleon#0                                                 
-             Repeat: None                                                       
-             Mention: False                                                     
-             Time: 2023-07-05T07:16:03.963312-04:00                             
-07:25:20,705 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
+09:36:36,364 [INFO] Loading pyproject.toml to parse version.           bot.py:44
+09:36:36,366 [INFO] Bot version: 1.2.3                                 bot.py:47
+09:36:36,641 [INFO] Using SQLite version 3.37.2.               scheduler.py:1320
+09:36:36,647 [INFO] Loading scheduler cog.                     scheduler.py:1159
+09:36:36,649 [INFO] Populated 0 schedules.                     scheduler.py:1177
+09:36:36,653 [INFO] Starting bot.                        start_discord_bot.py:60
+09:36:36,654 [INFO] logging in using static token                  client.py:628
+09:36:37,287 [INFO] Slash commands sync skipped.                       bot.py:83
+09:36:37,444 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
+09:36:37,627 [INFO] Shard ID None has connected to Gateway        gateway.py:546
+             (Session ID: 165288d2a22628176a753599826bae36).                    
+09:36:39,638 [INFO] Bot is ready.                                      bot.py:90
+09:37:44,760 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
              supported                                                          
-07:25:20,709 [INFO] Loading pyproject.toml to parse version.           bot.py:44
-07:25:20,710 [INFO] Bot version: 1.2.3                                 bot.py:47
-07:25:20,992 [INFO] Using SQLite version 3.37.2.               scheduler.py:1318
-07:25:20,998 [INFO] Loading scheduler cog.                     scheduler.py:1157
-07:25:21,000 [INFO] Populated 0 schedules.                     scheduler.py:1175
-07:25:21,002 [INFO] Starting bot.                        start_discord_bot.py:53
-07:25:21,003 [INFO] logging in using static token                  client.py:628
-07:25:21,439 [INFO] Syncing slash commands (this may take a while).    bot.py:61
-07:25:21,672 [INFO] Slash commands synced.                             bot.py:67
-07:25:21,827 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
-07:25:22,053 [INFO] Shard ID None has connected to Gateway        gateway.py:546
-             (Session ID: 313552e15efa317415b9884d75c0c249).                    
-07:25:24,062 [INFO] Bot is ready.                                      bot.py:82
-07:26:39,139 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
-             supported                                                          
-07:26:39,142 [INFO] Loading pyproject.toml to parse version.           bot.py:44
-07:26:39,143 [INFO] Bot version: 1.2.3                                 bot.py:47
-07:26:39,448 [INFO] Using SQLite version 3.37.2.               scheduler.py:1318
-07:26:39,454 [INFO] Loading scheduler cog.                     scheduler.py:1157
-07:26:39,456 [INFO] Populated 0 schedules.                     scheduler.py:1175
-07:26:39,458 [INFO] Starting bot.                        start_discord_bot.py:53
-07:26:39,459 [INFO] logging in using static token                  client.py:628
-07:26:39,879 [INFO] Syncing slash commands (this may take a while).    bot.py:61
-07:26:40,125 [INFO] Slash commands synced.                             bot.py:67
-07:26:40,284 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
-07:26:40,409 [INFO] Shard ID None has connected to Gateway        gateway.py:546
-             (Session ID: d4f5eb822ed1b88681c6f0434092b06b).                    
-07:26:42,419 [INFO] Bot is ready.                                      bot.py:82
-07:30:50,876 [WARNING] PyNaCl is not installed, voice will NOT be  client.py:320
-             supported                                                          
-07:30:50,879 [INFO] Loading pyproject.toml to parse version.           bot.py:44
-07:30:50,880 [INFO] Bot version: 1.2.3                                 bot.py:47
-07:30:51,164 [INFO] Using SQLite version 3.37.2.               scheduler.py:1318
-07:30:51,170 [INFO] Loading scheduler cog.                     scheduler.py:1157
-07:30:51,172 [INFO] Populated 0 schedules.                     scheduler.py:1175
-07:30:51,174 [INFO] Starting bot.                        start_discord_bot.py:53
-07:30:51,175 [INFO] logging in using static token                  client.py:628
-07:30:51,497 [INFO] Syncing slash commands (this may take a while).    bot.py:61
-07:30:51,773 [INFO] Slash commands synced.                             bot.py:67
-07:30:51,933 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
-07:30:52,046 [INFO] Shard ID None has connected to Gateway        gateway.py:546
-             (Session ID: b320842de70dea3bb3bd37ff7a23e2d9).                    
-07:30:54,058 [INFO] Bot is ready.                                      bot.py:82
+09:37:44,763 [INFO] Loading pyproject.toml to parse version.           bot.py:44
+09:37:44,765 [INFO] Bot version: 1.2.3                                 bot.py:47
+09:37:45,040 [INFO] Using SQLite version 3.37.2.               scheduler.py:1320
+09:37:45,046 [INFO] Loading scheduler cog.                     scheduler.py:1159
+09:37:45,048 [INFO] Populated 0 schedules.                     scheduler.py:1177
+09:37:45,052 [INFO] Starting bot.                        start_discord_bot.py:60
+09:37:45,053 [INFO] logging in using static token                  client.py:628
+09:37:45,486 [INFO] Slash commands sync skipped.                       bot.py:83
+09:37:45,649 [INFO] Shard ID None has sent the IDENTIFY payload.  gateway.py:458
+09:37:45,836 [INFO] Shard ID None has connected to Gateway        gateway.py:546
+             (Session ID: 10829e024420041e756e518c6ee79d5e).                    
+09:37:47,845 [INFO] Bot is ready.                                      bot.py:90
+09:39:46,917 [ERROR] Task exception was never retrieved            runners.py:44
+             future: <Task finished                                             
+             name='discord-ui-view-timeout-8d3b0ed47151ea8aa9f0385              
+             b3f1bfb16'                                                         
+             coro=<General.show_tasks.<locals>.MyView.on_timeout()              
+             done, defined at                                                   
+             /home/leon/Desktop/discord_bot/cogs/general.py:89>                 
+             exception=AttributeError("'MyView' object has no                   
+             attribute 'message'")>                                             
+             ╭──────── Traceback (most recent call last) ────────╮              
+             │ /home/leon/Desktop/discord_bot/cogs/general.py:90 │              
+             │ in on_timeout                                     │              
+             │                                                   │              
+             │    87 │   │                                       │              
+             │    88 │   │   # guild = self.bot.get_guild(event. │              
+             │    89 │   │                                       │              
+             │ ❱  90 │   │   class MyView(discord.ui.View):      │              
+             │    91 │   │   │   async def on_timeout(self):     │              
+             │    92 │   │   │   │   await self.message.edit(con │              
+             │    93                                             │              
+             │                                                   │              
+             │ ╭───────────────── locals ──────────────────╮     │              
+             │ │ self = <MyView timeout=180.0 children=21> │     │              
+             │ ╰───────────────────────────────────────────╯     │              
+             ╰───────────────────────────────────────────────────╯              
+             AttributeError: 'MyView' object has no attribute                   
+             'message'                                                          
+09:41:16,963 [ERROR] Task exception was never retrieved            runners.py:44
+             future: <Task finished                                             
+             name='discord-ui-view-timeout-f21fe68c68dbfaa54725eeb              
+             49c2344e0'                                                         
+             coro=<General.show_tasks.<locals>.MyView.on_timeout()              
+             done, defined at                                                   
+             /home/leon/Desktop/discord_bot/cogs/general.py:89>                 
+             exception=AttributeError("'MyView' object has no                   
+             attribute 'message'")>                                             
+             ╭──────── Traceback (most recent call last) ────────╮              
+             │ /home/leon/Desktop/discord_bot/cogs/general.py:90 │              
+             │ in on_timeout                                     │              
+             │                                                   │              
+             │    87 │   │                                       │              
+             │    88 │   │   # guild = self.bot.get_guild(event. │              
+             │    89 │   │                                       │              
+             │ ❱  90 │   │   class MyView(discord.ui.View):      │              
+             │    91 │   │   │   async def on_timeout(self):     │              
+             │    92 │   │   │   │   await self.message.edit(con │              
+             │    93                                             │              
+             │                                                   │              
+             │ ╭───────────────── locals ──────────────────╮     │              
+             │ │ self = <MyView timeout=180.0 children=22> │     │              
+             │ ╰───────────────────────────────────────────╯     │              
+             ╰───────────────────────────────────────────────────╯              
+             AttributeError: 'MyView' object has no attribute                   
+             'message'                                                          
+09:41:17,241 [ERROR] Task exception was never retrieved            runners.py:44
+             future: <Task finished                                             
+             name='discord-ui-view-timeout-bf593941f9c9fb9dba65b8b              
+             0b91971e4'                                                         
+             coro=<General.show_tasks.<locals>.MyView.on_timeout()              
+             done, defined at                                                   
+             /home/leon/Desktop/discord_bot/cogs/general.py:91>                 
+             exception=AttributeError("'MyView' object has no                   
+             attribute 'message'")>                                             
+             ╭──────── Traceback (most recent call last) ────────╮              
+             │ /home/leon/Desktop/discord_bot/cogs/general.py:92 │              
+             │ in on_timeout                                     │              
+             │                                                   │              
+             │    89 │   │                                       │              
+             │    90 │   │   class MyView(discord.ui.View):      │              
+             │    91 │   │   │   async def on_timeout(self):     │              
+             │ ❱  92 │   │   │   │   await self.message.edit(con │              
+             │    93 │   │   │                                   │              
+             │    94 │   │   │   def __init__(self, buttons_data │              
+             │    95 │   │   │   │   super().__init__()          │              
+             │                                                   │              
+             │ ╭───────────────── locals ──────────────────╮     │              
+             │ │ self = <MyView timeout=180.0 children=22> │     │              
+             │ ╰───────────────────────────────────────────╯     │              
+             ╰───────────────────────────────────────────────────╯              
+             AttributeError: 'MyView' object has no attribute                   
+             'message'                                                          

@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "discord bot",
+            "type": "python",
+            "request": "launch",
+            "program": "start_discord_bot.py",
+            "args": ["-s", "MTEyNzk1NDY4NDgzODE1ODM1OA.G3yEe2.1wiiJ6WTcvs6oRO7AHOdtnktmpgqBQIOk9EYRo"],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+
+        }
+    ]
+}

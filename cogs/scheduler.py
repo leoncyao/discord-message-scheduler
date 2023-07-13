@@ -4,6 +4,7 @@ scheduler.py
 Scheduler category and commands.
 """
 from __future__ import annotations
+import shutil
 
 
 import tabulate
@@ -18,9 +19,10 @@ from math import ceil
 from secrets import token_hex
 from typing import TYPE_CHECKING, NamedTuple, Type, Literal, cast, TypeAlias, Any
 import json
-import shutil
+
 
 from dateutil import parser
+
 
 
 import datetime
@@ -1847,26 +1849,73 @@ class Scheduler(Cog):
             allowed_mentions = discord.AllowedMentions.none()
         # channel has .send since invalid channel typed are filtered above with hasattr(channel, 'send')
 
+        class MyView(discord.ui.View):
+            async def on_timeout(self):
+                await self.message.edit(content='Button interaction timeout.')
 
-        f = open('test.json')
-        asdf = json.load(f)
+            def __init__(self, buttons_data):
+                super().__init__()
+                self.buttons_data = buttons_data
+                self.generate_buttons()
+
+            def generate_buttons(self):
+                for button_data in self.buttons_data:
+                    button = discord.ui.Button(style=discord.ButtonStyle.primary, label=button_data['label'])
+                    button.callback = self.button_callback
+                    button.callback.__annotations__['button'] = discord.ui.Button
+
+                    self.add_item(button)
+
+            async def button_callback(self, interaction):
+                
+                f = open('data/test.json', 'r')
+                asdf = json.load(f)
+                target_child = None
+                # target_id = button.data['custom_id']
+
+
+                # Super ghetto, couldn't figure out how to pass in the interaction, 
+                # so just looked for button inside view.children with the custom_id
+                # there has to be a better way, bperfect is the anthesis of better
+                for child in self.children:
+                    # child_id = child.custom_id
+                    if child.custom_id == interaction.data['custom_id']:
+                        target_child = child
+                        break
+                asdf[target_child.label].append(datetime.datetime.today().isoformat())
+
+                outfile = open('data/test_copy.json', 'w')
+                json.dump(asdf, outfile, indent=4)
+                outfile.close()
+                shutil.copyfile("data/test_copy.json", "data/test.json")
+
+                await interaction.response.send_message(f'Button clicked!')
+
+
+        f = open('data/test.json')
+        task_data = json.load(f)
         f.close()
 
         my_str = "Days_since: \n"
-
-        tasks = list(asdf.keys())
-
-
+        tasks = list(task_data.keys())
         days_since_values = []
+        # buttons = []
+
+        # view = discord.ui.View()
+        buttons_data = []
         for i in range(len(tasks)):
             task = tasks[i]       
-            days_for_task = asdf[task]
+            days_for_task = task_data[task]
             if len(days_for_task) > 0:
                 most_recent = parser.parse(days_for_task[-1])
-                days_since_values.append((datetime.datetime.today() - most_recent).days)
+                days_since_values.append(str((datetime.datetime.today() - most_recent).days))
             else:
-                days_since_values.append(0)
+                days_since_values.append("0")
+            # buttons.append(create_button(label=task))
+            # view.add_item(discord.ui.Button(label=task))
+            buttons_data.append({'label': task, 'days_since_value': days_since_values[-1]})
 
+        view = MyView(buttons_data)
 
         df = pd.DataFrame({'Task Names' : tasks, 'Days Since' : days_since_values})
 
@@ -1875,23 +1924,8 @@ class Scheduler(Cog):
         logger.debug(my_str)
 
         sent_message = await channel.send(my_str)
-        # NOTE I CAN ONLY SUPPORT 10 TASKS RIGHT NOW, need to find emojis for 2 digt numbers
-        for i in range(len(tasks)):
-            await sent_message.add_reaction(str(i) + '\N{combining enclosing keycap}')
-        # test = await self.bot.wait_for("reaction_add")
-
-        # strs = list(test[0].emoji)
-        # logger.debug(strs)
-        # index = int(''.join(strs[:-1]))
-        # clicked_task_name = tasks[index]
-        # asdf[clicked_task_name].append(datetime.datetime.today().isoformat())
-        # logger.debug(asdf)
-
-        # with open('test_copy.json', 'w') as outfile:
-        #     json.dump(asdf, outfile, indent=4)
-
-        # shutil.copyfile("test_copy.json", "test.json")
-
+        await channel.send(view=view)
+            
         return True
 
     async def _scheduler_event_loop(self) -> None:
