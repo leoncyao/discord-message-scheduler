@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "start_discord_bot.py",
-            "args": ["-s", "MTEyNzk1NDY4NDgzODE1ODM1OA.G3yEe2.1wiiJ6WTcvs6oRO7AHOdtnktmpgqBQIOk9EYRo"],
+            "args": ["-s", "MTEyNzk1NDY4NDgzODE1ODM1OA.G0HdNj.uOzaJqfEDjQF67QUHdiLr2MdPaS-bz6hCaVm4s"],
             "console": "integratedTerminal",
             "justMyCode": true,
 

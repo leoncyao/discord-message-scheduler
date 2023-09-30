@@ -5,6 +5,7 @@ A collection of general commands.
 """
 from __future__ import annotations
 
+import random
 import logging
 from typing import TYPE_CHECKING
 
@@ -54,7 +55,7 @@ class General(Cog):
 
         f = open('data/test.json', 'r')
         asdf = json.load(f)
-        asdf[" ".join(task_name_word_list)] = []
+        asdf[" ".join(task_name_word_list)] = [datetime.datetime.today().isoformat()]
 
         outfile = open('data/test_copy.json', 'w')
         json.dump(asdf, outfile, indent=4)
@@ -81,6 +82,14 @@ class General(Cog):
         
         # await self.show_tasks(ctx)
 
+    @commands.command(aliases=['青青'])
+    async def get_sayings(self, ctx: commands.Context[Bot]) -> None:
+        f = open('data/morning_vibes.json', 'r')
+        asdf = json.load(f)
+        成语 = asdf['成语']
+        selection = random.choice(成语)
+        await ctx.send(selection)
+
     @commands.command(aliases=['show'])
     async def show_tasks(self, ctx: commands.Context[Bot]) -> None:
         """Shows info about me."""
@@ -88,8 +97,8 @@ class General(Cog):
         # guild = self.bot.get_guild(event.guild_id)
 
         class MyView(discord.ui.View):
-            async def on_timeout(self):
-                await self.message.edit(content='Button interaction timeout.')
+            # async def on_timeout(self):
+                # await self.message.edit(content='Button interaction timeout.')
 
             def __init__(self, buttons_data):
                 super().__init__()
@@ -97,7 +106,9 @@ class General(Cog):
                 self.generate_buttons()
 
             def generate_buttons(self):
-                for button_data in self.buttons_data:
+                sorted_button_data = sorted(self.buttons_data, key=lambda x : x['label'])
+                for button_data in sorted_button_data:
+                    # logger.debug(f"{button_data['label']}")
                     button = discord.ui.Button(style=discord.ButtonStyle.primary, label=button_data['label'])
                     button.callback = self.button_callback
                     button.callback.__annotations__['button'] = discord.ui.Button
@@ -127,9 +138,9 @@ class General(Cog):
                 outfile.close()
                 shutil.copyfile("data/test_copy.json", "data/test.json")
 
-                await interaction.response.send_message(f'Button clicked!')
+                await interaction.response.send_message(f'Button clicked! test')
 
-        logger.debug(os.getcwd())
+        # logger.debug(os.getcwd())
         f = open('data/test.json')
         task_data = json.load(f)
         f.close()
@@ -137,9 +148,7 @@ class General(Cog):
         my_str = "data/Days_since: \n"
         tasks = list(task_data.keys())
         days_since_values = []
-        # buttons = []
 
-        # view = discord.ui.View()
         buttons_data = []
         for i in range(len(tasks)):
             task = tasks[i]       
@@ -149,8 +158,6 @@ class General(Cog):
                 days_since_values.append(str((datetime.datetime.today() - most_recent).days))
             else:
                 days_since_values.append("0")
-            # buttons.append(create_button(label=task))
-            # view.add_item(discord.ui.Button(label=task))
             buttons_data.append({'label': task, 'days_since_value': days_since_values[-1]})
 
         view = MyView(buttons_data)
@@ -159,7 +166,7 @@ class General(Cog):
 
         my_str = "```" + tabulate.tabulate(df, headers='keys', tablefmt='psql') + "```"
 
-        logger.debug(my_str)
+        # logger.debug(my_str)
 
         # sent_message = await channel.send(my_str)
         # await channel.send(view=view)
