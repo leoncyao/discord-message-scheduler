@@ -125,7 +125,7 @@ class General(Cog):
 
                 # Super ghetto, couldn't figure out how to pass in the interaction, 
                 # so just looked for button inside view.children with the custom_id
-                # there has to be a better way, bperfect is the anthesis of better
+                # there has to be a better way, but perfect is the anthesis of better
                 for child in self.children:
                     # child_id = child.custom_id
                     if child.custom_id == interaction.data['custom_id']:

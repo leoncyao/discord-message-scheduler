@@ -8,12 +8,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import sys
-import json
 from src.bot import Bot
-import datetime
-
-import shutil
-
 logger = logging.getLogger(__name__)
 
 import argparse

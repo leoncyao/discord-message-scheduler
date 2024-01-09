@@ -1,0 +1,1 @@
+yt-dlp https://www.youtube.com/playlist?list=PLFk_K5IhsEE9sOpV5TesRCdVtu57FDd_Y -x --audio-format mp3 -P new_music/

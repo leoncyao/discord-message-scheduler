@@ -4,11 +4,10 @@ scheduler.py
 Scheduler category and commands.
 """
 from __future__ import annotations
-import shutil
 
-
-import tabulate
-import pandas as pd
+import json
+import os
+from yt_dlp import YoutubeDL
 import asyncio
 import heapq
 import logging
@@ -18,17 +17,10 @@ from dataclasses import dataclass
 from math import ceil
 from secrets import token_hex
 from typing import TYPE_CHECKING, NamedTuple, Type, Literal, cast, TypeAlias, Any
-import json
-
-
-from dateutil import parser
-
-
-
-import datetime
 
 import aiosqlite
 import arrow
+import random
 from packaging import version
 
 import discord
@@ -376,17 +368,13 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
         message: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
             label="Message",
             style=discord.TextStyle.paragraph,
-            required=False,
+            required=True,
             max_length=1000,
-            # default=message_default,
-            default="my test "
+            default=message_default,
         )
         time: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
-            label="Scheduled Time (MM/DD/YY HH:MM:SS)", required=False, max_length=100, default="in 1 seconds"
+            label="Scheduled Time (MM/DD/YY HH:MM:SS)", required=True, max_length=100, default=time_default
         )
-        # time: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
-        #     label="Scheduled Time (MM/DD/YY HH:MM:SS)", required=False, max_length=100, default=time_default
-        # )
         timezone: discord.ui.TextInput[ScheduleModal] = discord.ui.TextInput(
             label="Timezone (UTC offset +/-HH:MM)", required=False, max_length=100, default=timezone_default
         )
@@ -483,7 +471,6 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
 
             repeat = _parse_repeat(self.repeat.value)
             return SanitizedScheduleEvent(interaction.user, self.channel, self.message.value, time, repeat)
-            # return SanitizedScheduleEvent(interaction.user, self.channel,  "modding ", time, repeat)
 
         @property
         def acceptable_formats(self) -> list[str]:
@@ -576,25 +563,25 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
                     if check:  # if pinging is a possibility
                         logger.info("Sending mention approval form.")
 
-                        # embed = discord.Embed(
-                        #     title="This scheduled message contains mentions",
-                        #     description="Click **Yes** if the mentions should ping "
-                        #     "its members, otherwise click **No**.\n\n"
-                        #     "Alternatively, click **Edit** to revise your message.",
-                        #     colour=COLOUR,
-                        # )
-                        # embed.add_field(name="Message", value=event.message, inline=False)
-                        # await interaction.response.send_message(
-                        #     embed=embed,
-                        #     view=ScheduleMentionView(
-                        #         self.scheduler,
-                        #         interaction.user,
-                        #         self.channel,
-                        #         event,
-                        #         RawScheduleModalValues.from_modal(self),
-                        #     ),
-                        #     ephemeral=True,
-                        # )
+                        embed = discord.Embed(
+                            title="This scheduled message contains mentions",
+                            description="Click **Yes** if the mentions should ping "
+                            "its members, otherwise click **No**.\n\n"
+                            "Alternatively, click **Edit** to revise your message.",
+                            colour=COLOUR,
+                        )
+                        embed.add_field(name="Message", value=event.message, inline=False)
+                        await interaction.response.send_message(
+                            embed=embed,
+                            view=ScheduleMentionView(
+                                self.scheduler,
+                                interaction.user,
+                                self.channel,
+                                event,
+                                RawScheduleModalValues.from_modal(self),
+                            ),
+                            ephemeral=True,
+                        )
                         return
 
                 logger.info("Saving event: no mention or no perms.")
@@ -605,14 +592,14 @@ def get_schedule_modal(defaults: RawScheduleModalValues | None = None) -> Type[S
 
             logger.info("Failed to save, sending edit form.")
             # If failed
-            # embed.set_footer(text='Click the "Edit" button below to edit your form.')
-            # await interaction.response.send_message(
-            #     embed=embed,
-            #     view=ScheduleEditView(
-            #         self.scheduler, interaction.user, self.channel, RawScheduleModalValues.from_modal(self)
-            #     ),
-            #     ephemeral=True,
-            # )
+            embed.set_footer(text='Click the "Edit" button below to edit your form.')
+            await interaction.response.send_message(
+                embed=embed,
+                view=ScheduleEditView(
+                    self.scheduler, interaction.user, self.channel, RawScheduleModalValues.from_modal(self)
+                ),
+                ephemeral=True,
+            )
 
     return ScheduleModal
 
@@ -1152,9 +1139,19 @@ class Scheduler(Cog):
         self.schedule_heap: list[StrippedSavedScheduleEvent] = []
         self.heap_lock = asyncio.Lock()
 
+    async def first_message(self, author, channel):
+        now = arrow.utcnow()
+        new_time = now.shift(seconds=10)
+        time_stamp = new_time.timestamp()
 
-        # event = ScheduleEvent(bot, )
-        # self._save_event(editing=False)
+
+        SavedEvent = SavedScheduleEvent(1, "quote", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , 720, False, False)
+        event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        await self._save_event(event, False, None)
+
+        SavedEvent = SavedScheduleEvent(1, "favorite_manga_pic", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , 720, False, False)
+        event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        await self._save_event(event, False, None)
 
 
     async def cog_load(self) -> None:
@@ -1187,12 +1184,6 @@ class Scheduler(Cog):
 
         # Start the scheduler loop
         asyncio.create_task(self.scheduler_event_loop())
-
-        # PROBABLY SHOULD SERIALIZE THE CURRENT MESSAGE IM SENDING, THEN SEND IT .on
-
-        # then load it and send it with
-        # await self.scheduler.save_event(interaction, ScheduleEvent.from_sanitized(event, False))
-
 
     async def cog_unload(self) -> None:
         """
@@ -1675,8 +1666,7 @@ class Scheduler(Cog):
         else:
             embed.title = f"Scheduled Message Edited (Event ID #{event_db.id})"
             embed.set_footer(text=f"{event.author} has edited a scheduled message.")
-        # await interaction.response.send_message(embed=embed)
-        await interaction.response.send_message("Days Since Tracker")
+        await interaction.response.send_message(embed=embed)
         return
 
     async def _save_event(
@@ -1722,7 +1712,7 @@ class Scheduler(Cog):
 
             # The rest of this function don't need to be run, editing the SQL here then return
             event_db = await self._edit_schedule(event, original_event)
-
+            logger.info(str(event.repeat))
             logger.info("Edited schedule in database with ID %d.", original_event.id)
             logger.info(
                 "Message (preview): %s\nGuild: %s\nChannel: %s\nAuthor: %s\nRepeat: %s\nMention: %s\nTime: %s",
@@ -1761,7 +1751,7 @@ class Scheduler(Cog):
 
         # Inserts into database
         event_db = await self._insert_schedule(event)
-
+        logger.info(str(event.repeat))
         logger.info("Added schedule into database with ID %d.", event_db.id)
         logger.info(
             "Message (preview): %s\nGuild: %s\nChannel: %s\nAuthor: %s\nRepeat: %s\nMention: %s\nTime: %s",
@@ -1853,6 +1843,49 @@ class Scheduler(Cog):
                     event.id,
                 )
             allowed_mentions = discord.AllowedMentions.none()
+        # channel has .send since invalid channel typed are filtered above with hasattr(channel, 'send')
+        logger.info(event.message)
+        f = open('data/morning_vibes.json', 'r')
+        data = json.load(f)
+        if event.message == "quote" or event.message == "passage":
+            # quotes = asdf['quotes']
+            section = data[event.message+'s']
+            randomly_selected_quote = random.choice(section)
+            message = randomly_selected_quote[0]
+            if len(randomly_selected_quote) > 1:
+                message = message + "\n -- " + randomly_selected_quote[1]
+            await author.send(message)
+        elif "apply jobbank_gc" in event.message:    
+            # man I should really make my job bot into a python library
+            compile_command = "python3 main.py"
+            os.system(compile_command)
+        elif "favorite_manga_pic":
+            image_paths = data['image_paths']
+            randomly_selected_image = random.choice(image_paths)
+            with open("data/images/" + randomly_selected_image, 'rb') as f:
+                picture = discord.File(f)
+                await author.send(file=picture)
+        elif "download new music playlist" in event.message:
+            # playlist_link = event.message.split(' ')[-1]
+            # ydl_opts = {
+            #     'format': 'mp3/bestaudio/best',
+            #     # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
+            #     'postprocessors': [{  # Extract audio using ffmpeg
+            #         'key': 'FFmpegExtractAudio',
+            #         'preferredcodec': 'm4a',
+            #     }],
+            # }
+            # logger.info("DOWNLOADING FROM " + playlist_link)
+            # with YoutubeDL(ydl_opts) as ydl:
+            #     ydl.download(playlist_link)
+            pass 
+        else:
+            await author.send(event.message)
+        # logger.info("asdf")
+        # await channel.send(  # type: ignore[reportGeneralTypeIssues]
+        #     event.message, allowed_mentions=allowed_mentions
+        # )
+        # TODO: add a "report abuse" feature/command, save all sent msg in a db table with the id
         return True
 
     async def _scheduler_event_loop(self) -> None:
@@ -2029,7 +2062,9 @@ class Scheduler(Cog):
     @schedule.command(name="show", aliases=["view"])
     @discord.app_commands.describe(event_id="The event ID of the scheduled message (see `/list`).")
     async def schedule_show(self, ctx: commands.Context[Bot], event_id: int) -> None:
-    
+        """Show related info of a scheduled message event.
+        `event_id` - The event ID of the scheduled message (see `/list`).
+        """
 
         logger.debug("%s is trying to show schedule %d.", ctx.author, event_id)
 

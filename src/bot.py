@@ -89,6 +89,65 @@ class Bot(commands.Bot):
         """
         logger.info("[bold green]Bot is ready.[/bold green]", extra={"markup": True})
 
+        # logger.info("test" + str(bot.guilds))    
+        # logger.info("test" + str(self.guilds[0]))
+        # logger.info(str(self.cogs))
+
+        # 00:52:48,846 [INFO] Text Channels                                                                           bot.py:101
+        # 00:52:48,847 [INFO] 1113650739160555580                                                                     bot.py:102
+        # 00:52:48,849 [INFO] Voice Channels                                                                          bot.py:101
+        # 00:52:48,850 [INFO] 1113650739160555581                                                                     bot.py:102
+        # 00:52:48,851 [INFO] general                                                                                 bot.py:101
+        # 00:52:48,853 [INFO] 1113650739160555582                                                                     bot.py:102
+        # 00:52:48,854 [INFO] General                                                                                 bot.py:101
+        # 00:52:48,855 [INFO] 1113650739160555583                                                                     bot.py:102
+        # 00:52:48,857 [INFO] thoughts                                                                                bot.py:101
+        # 00:52:48,858 [INFO] 1135520426689298512                                                                     bot.py:102
+        # 00:52:48,859 [INFO] quotes-i-like                                                                           bot.py:101
+        # 00:52:48,861 [INFO] 1135559338992353330                                                                     bot.py:102
+        # 00:52:48,862 [INFO] 中文                                                                                    bot.py:101
+        # 00:52:48,863 [INFO] 1149414854294253628                                                                     bot.py:102
+        # 00:52:48,864 [INFO] jokes                                                                                   bot.py:101
+        # 00:52:48,866 [INFO] 1166713661235146772                                                                     bot.py:102
+        # 00:52:48,867 [INFO] workout                                                                                 bot.py:101
+        # 00:52:48,869 [INFO] 1176571392251142154                                                                     bot.py:102
+        # 00:52:48,870 [INFO] busking                                                                                 bot.py:101
+        # 00:52:48,871 [INFO] 1183539342510137444  
+
+        Mind = self.guilds[0]
+        leon = Mind.get_member(184164823725113344)
+        # channel = Mind.channels[0]
+        channels = Mind.channels 
+        # for channel in channels:
+        #     logger.info(channel)
+        #     logger.info(channel.id)
+
+        channel = Mind.get_channel(1113650739160555582)
+            
+        # logger.info(channels)
+
+        scheduler = self.cogs['Scheduler']
+
+        await scheduler.first_message(leon, channel)
+
+        # now = arrow.utcnow()
+        # new_time = now.shift(minutes=1)
+        # time_stamp = new_time.timestamp()
+        # SavedEvent = SavedScheduleEvent(1, "test", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , None, False, False)
+        # event = ScheduleEvent.from_saved(SavedEvent, leon, 'general')
+        # await self._save_event(event, False, None)
+        # for cog in self.cogs:
+        #     print(str(cog))
+        #     async def first_message(self, author, channel):
+        # now = arrow.utcnow()
+        # new_time = now.shift(seconds=10)
+        # time_stamp = new_time.timestamp()
+        # SavedEvent = SavedScheduleEvent(1, "senddd", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , None, False, False)
+        # event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        # await self._save_event(event, False, None)
+
+
+
     _TYPE_CLEAN_NAME: dict[str, str] = {
         discord.TextChannel.__name__: "text channel",
         discord.VoiceChannel.__name__: "voice channel",

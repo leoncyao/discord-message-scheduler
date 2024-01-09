@@ -10,8 +10,13 @@
         "*.yaml" : true,
         ".idea" : true,
         ".github" : true,
-        "discord": true,
+        // "discord": true,
         "docs": true,
         
+    },
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#301380",
+        "titleBar.activeBackground": "#431BB3",
+        "titleBar.activeForeground": "#FCFBFE"
     }
 }
