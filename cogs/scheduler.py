@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 from yt_dlp import YoutubeDL
 import asyncio
 import heapq
@@ -1141,15 +1142,24 @@ class Scheduler(Cog):
 
     async def first_message(self, author, channel):
         now = arrow.utcnow()
-        new_time = now.shift(seconds=10)
-        time_stamp = new_time.timestamp()
+        # now = arrow.get('2013-05-11T21:23:58.970460+07:00')
+        new_time_1 = now.shift(days=1)
+        new_time_1.replace(hour=8)
+        time_stamp_1 = new_time_1.timestamp()
 
+        new_time_2 = now.shift(days=1)
+        new_time_2 = new_time_2.replace(hour=14)
+        time_stamp_2 = new_time_2.timestamp()
 
-        SavedEvent = SavedScheduleEvent(1, "quote", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , 720, False, False)
+        SavedEvent = SavedScheduleEvent(1, "quote", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp_1 , 1440, False, False)
         event = ScheduleEvent.from_saved(SavedEvent, author, channel)
         await self._save_event(event, False, None)
 
-        SavedEvent = SavedScheduleEvent(1, "favorite_manga_pic", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , 720, False, False)
+        SavedEvent = SavedScheduleEvent(1, "favorite_manga_pic", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp_2 , 1440, False, False)
+        event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        await self._save_event(event, False, None)
+
+        SavedEvent = SavedScheduleEvent(1, "apply jobbank_gc", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
         event = ScheduleEvent.from_saved(SavedEvent, author, channel)
         await self._save_event(event, False, None)
 
@@ -1855,10 +1865,16 @@ class Scheduler(Cog):
             if len(randomly_selected_quote) > 1:
                 message = message + "\n -- " + randomly_selected_quote[1]
             await author.send(message)
+        elif "apply LinkedIn" in event.message: 
+            pass
         elif "apply jobbank_gc" in event.message:    
-            # man I should really make my job bot into a python library
-            compile_command = "python3 main.py"
-            os.system(compile_command)
+
+            # Specify the directory path
+            directory_path = '/home/leon/Desktop/automated_projects/jobbank_gc_auto_apply/'
+
+            # Change the current working directory to the specified directory
+            subprocess.Popen('sh scripts/run_in_background.sh', cwd=directory_path, shell=True)
+
         elif "favorite_manga_pic":
             image_paths = data['image_paths']
             randomly_selected_image = random.choice(image_paths)
