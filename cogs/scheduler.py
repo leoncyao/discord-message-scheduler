@@ -6,19 +6,22 @@ Scheduler category and commands.
 from __future__ import annotations
 
 import json
+import shutil
 import os
 import subprocess
-from yt_dlp import YoutubeDL
 import asyncio
+import datetime
 import heapq
 import logging
+import tabulate
+import pandas as pd
 import re
 import warnings
 from dataclasses import dataclass
 from math import ceil
 from secrets import token_hex
 from typing import TYPE_CHECKING, NamedTuple, Type, Literal, cast, TypeAlias, Any
-
+from dateutil import parser as time_parser
 import aiosqlite
 import arrow
 import random
@@ -1155,14 +1158,26 @@ class Scheduler(Cog):
         event = ScheduleEvent.from_saved(SavedEvent, author, channel)
         await self._save_event(event, False, None)
 
-        SavedEvent = SavedScheduleEvent(1, "favorite_manga_pic", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp_2 , 1440, False, False)
+        SavedEvent = SavedScheduleEvent(1, "favorite_manga_pic", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
         event = ScheduleEvent.from_saved(SavedEvent, author, channel)
         await self._save_event(event, False, None)
 
-        SavedEvent = SavedScheduleEvent(1, "apply jobbank_gc", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
+        # SavedEvent = SavedScheduleEvent(1, "apply jobbank_gc", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
+        # event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        # await self._save_event(event, False, None)
+
+
+        SavedEvent = SavedScheduleEvent(1, "days_since", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
         event = ScheduleEvent.from_saved(SavedEvent, author, channel)
         await self._save_event(event, False, None)
 
+        SavedEvent = SavedScheduleEvent(1, "get_sit_ups", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
+        event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        await self._save_event(event, False, None)
+
+        SavedEvent = SavedScheduleEvent(1, "apply LinkedIn", 1113650738619486238, 184164823725113344, 1113650739160555582, now.timestamp() , 1440, False, False)
+        event = ScheduleEvent.from_saved(SavedEvent, author, channel)
+        await self._save_event(event, False, None)
 
     async def cog_load(self) -> None:
         """
@@ -1779,6 +1794,21 @@ class Scheduler(Cog):
             heapq.heappush(self.schedule_heap, event_db.strip())
         return event_db
 
+    async def send_quote(self, author, data):
+        section = data[event.message+'s']
+        randomly_selected_quote = random.choice(section)
+        message = randomly_selected_quote[0]
+        if len(randomly_selected_quote) > 1:
+            message = message + "\n -- " + randomly_selected_quote[1]
+        await author.send(message)
+    
+    # async def get_sit_ups():
+    #     channel = bot.get_channel(699577970117050399)
+    #     messages = await channel.history(limit=500).flatten()
+    #     print(messages)
+    #     for i in messages:
+    #         print(i.content)
+
     async def send_scheduled_message(self, stripped_event: StrippedSavedScheduleEvent) -> bool:
         """
         Sends a scheduled event message.
@@ -1844,57 +1874,154 @@ class Scheduler(Cog):
             logger.warning("Event with ID %d bot doesn't have perms.", event.id)
             return False
 
-        if event.mention and perms_author.mention_everyone:  # if mentions is enabled and author still has perms
-            allowed_mentions = discord.AllowedMentions.all()
-        else:
-            if event.mention:
-                logger.debug(
-                    "Event with ID %s mention disabled due to author doesn't have mention_everyone permission.",
-                    event.id,
-                )
-            allowed_mentions = discord.AllowedMentions.none()
+        # if event.mention and perms_author.mention_everyone:  # if mentions is enabled and author still has perms
+        #     allowed_mentions = discord.AllowedMentions.all()
+        # else:
+        #     if event.mention:
+        #         logger.debug(
+        #             "Event with ID %s mention disabled due to author doesn't have mention_everyone permission.",
+        #             event.id,
+        #         )
+        #     allowed_mentions = discord.AllowedMentions.none()
         # channel has .send since invalid channel typed are filtered above with hasattr(channel, 'send')
         logger.info(event.message)
         f = open('data/morning_vibes.json', 'r')
         data = json.load(f)
-        if event.message == "quote" or event.message == "passage":
-            # quotes = asdf['quotes']
-            section = data[event.message+'s']
-            randomly_selected_quote = random.choice(section)
-            message = randomly_selected_quote[0]
-            if len(randomly_selected_quote) > 1:
-                message = message + "\n -- " + randomly_selected_quote[1]
-            await author.send(message)
+        if event.message == "quote":
+            self.send_quote(author, data)
+            # # quotes = asdf['quotes']
+            # section = data[event.message+'s']
+            # randomly_selected_quote = random.choice(section)
+            # message = randomly_selected_quote[0]
+            # if len(randomly_selected_quote) > 1:
+            #     message = message + "\n -- " + randomly_selected_quote[1]
+            # await author.send(message)
+        elif event.message == "get_sit_ups":
+            # TODO FIX THIS I WROTE THIS AT 3am
+            
+            # chin ups
+            chin_ups_id = 1189642197214175273    
+            # sit ups
+            sit_ups_id = 1184852699871719544  
+
+            # channel = guild.get_channel(sit_ups_id)
+            # messages = channel.history(limit=500)
+            # message_contents = [message async for message in messages]
+            
+            # for i in message_contents:
+            #     work_out_data.append((i.created_at, i.content))
+
+            channel = guild.get_channel(chin_ups_id)
+            messages = channel.history(limit=500)
+            message_contents = [message async for message in messages]
+            
+            work_out_data = []
+            for i in message_contents:
+                work_out_data.append([str(i.created_at), i.content])
+                # print(i.created_at)
+                # print(i.content)
+            # # get_sit_ups(sit_ups_id)
+            outfile = open('data/workout.json', 'w')
+            test = {'chin ups' : work_out_data}
+
+            json.dump(test, outfile, indent=4)
         elif "apply LinkedIn" in event.message: 
-            pass
+            directory_path = '/home/leon/Desktop/automated_projects/EasyApplyJobsBot'
+
+            # Change the current working directory to the specified directory
+            # subprocess.Popen('sh run.sh', cwd=directory_path, shell=True)
+            # TODO only ignore linkedin output if in testingbot
+            # ignoring output from linkedin 
+            subprocess.Popen('sh run.sh', cwd=directory_path, shell=True, stdout=subprocess.DEVNULL)
+            # subprocess.Popen('ls', cwd=directory_path, shell=True)
         elif "apply jobbank_gc" in event.message:    
 
             # Specify the directory path
             directory_path = '/home/leon/Desktop/automated_projects/jobbank_gc_auto_apply/'
 
             # Change the current working directory to the specified directory
-            subprocess.Popen('sh scripts/run_in_background.sh', cwd=directory_path, shell=True)
+            subprocess.Popen('sh scripts/run_debug.sh', cwd=directory_path, shell=True)
 
-        elif "favorite_manga_pic":
+        elif "favorite_manga_pic" in event.message: 
             image_paths = data['image_paths']
             randomly_selected_image = random.choice(image_paths)
             with open("data/images/" + randomly_selected_image, 'rb') as f:
                 picture = discord.File(f)
                 await author.send(file=picture)
-        elif "download new music playlist" in event.message:
-            # playlist_link = event.message.split(' ')[-1]
-            # ydl_opts = {
-            #     'format': 'mp3/bestaudio/best',
-            #     # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
-            #     'postprocessors': [{  # Extract audio using ffmpeg
-            #         'key': 'FFmpegExtractAudio',
-            #         'preferredcodec': 'm4a',
-            #     }],
-            # }
-            # logger.info("DOWNLOADING FROM " + playlist_link)
-            # with YoutubeDL(ydl_opts) as ydl:
-            #     ydl.download(playlist_link)
-            pass 
+        elif "days_since" in event.message:
+            class MyView(discord.ui.View):
+            # async def on_timeout(self):
+                # await self.message.edit(content='Button interaction timeout.')
+                def __init__(self, buttons_data):
+                    super().__init__()
+                    self.buttons_data = buttons_data
+                    self.generate_buttons()
+
+                def generate_buttons(self):
+                    sorted_button_data = sorted(self.buttons_data, key=lambda x : x['label'])
+                    for button_data in sorted_button_data:
+                        # logger.debug(f"{button_data['label']}")
+                        button = discord.ui.Button(style=discord.ButtonStyle.primary, label=button_data['label'])
+                        button.callback = self.button_callback
+                        button.callback.__annotations__['button'] = discord.ui.Button
+
+                        self.add_item(button)
+
+                async def button_callback(self, interaction):
+                    
+                    f = open('data/test.json', 'r')
+                    asdf = json.load(f)
+                    target_child = None
+
+                    # Super ghetto, couldn't figure out how to pass in the interaction, 
+                    # so just looked for button inside view.children with the custom_id
+                    # there has to be a better way, but perfect is the anthesis of better
+                    for child in self.children:
+                        # child_id = child.custom_id
+                        if child.custom_id == interaction.data['custom_id']:
+                            target_child = child
+                            break
+                    asdf[target_child.label].append(datetime.datetime.today().isoformat())
+
+                    outfile = open('data/test_copy.json', 'w')
+                    json.dump(asdf, outfile, indent=4)
+                    outfile.close()
+                    shutil.copyfile("data/test_copy.json", "data/test.json")
+
+                    await interaction.response.send_message(f'Button clicked! test')
+
+            # logger.debug(os.getcwd())
+            f = open('data/test.json')
+            task_data = json.load(f)
+            f.close()
+
+            my_str = "data/Days_since: \n"
+            tasks = list(task_data.keys())
+            days_since_values = []
+
+            buttons_data = []
+            for i in range(len(tasks)):
+                task = tasks[i]       
+                days_for_task = task_data[task]
+                if len(days_for_task) > 0:
+                    most_recent = time_parser.parse(days_for_task[-1])
+                    days_since_values.append(str((datetime.datetime.today() - most_recent).days))
+                else:
+                    days_since_values.append("0")
+                buttons_data.append({'label': task, 'days_since_value': days_since_values[-1]})
+
+            view = MyView(buttons_data)
+
+            df = pd.DataFrame({'Task Names' : tasks, 'Days Since' : days_since_values})
+
+            my_str = "```" + tabulate.tabulate(df, headers='keys', tablefmt='psql') + "```"
+
+            # logger.debug(my_str)
+
+            # sent_message = await channel.send(my_str)
+            # await channel.send(view=view)
+            await author.send(my_str)
+            await author.send(view=view)
         else:
             await author.send(event.message)
         # logger.info("asdf")

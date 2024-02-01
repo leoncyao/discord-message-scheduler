@@ -118,9 +118,9 @@ class Bot(commands.Bot):
         leon = Mind.get_member(184164823725113344)
         # channel = Mind.channels[0]
         channels = Mind.channels 
-        # for channel in channels:
-        #     logger.info(channel)
-        #     logger.info(channel.id)
+        for channel in channels:
+            logger.info(channel)
+            logger.info(channel.id)
 
         channel = Mind.get_channel(1113650739160555582)
             
@@ -129,24 +129,6 @@ class Bot(commands.Bot):
         scheduler = self.cogs['Scheduler']
 
         await scheduler.first_message(leon, channel)
-
-        # now = arrow.utcnow()
-        # new_time = now.shift(minutes=1)
-        # time_stamp = new_time.timestamp()
-        # SavedEvent = SavedScheduleEvent(1, "test", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , None, False, False)
-        # event = ScheduleEvent.from_saved(SavedEvent, leon, 'general')
-        # await self._save_event(event, False, None)
-        # for cog in self.cogs:
-        #     print(str(cog))
-        #     async def first_message(self, author, channel):
-        # now = arrow.utcnow()
-        # new_time = now.shift(seconds=10)
-        # time_stamp = new_time.timestamp()
-        # SavedEvent = SavedScheduleEvent(1, "senddd", 1113650738619486238, 184164823725113344, 1113650739160555582, time_stamp , None, False, False)
-        # event = ScheduleEvent.from_saved(SavedEvent, author, channel)
-        # await self._save_event(event, False, None)
-
-
 
     _TYPE_CLEAN_NAME: dict[str, str] = {
         discord.TextChannel.__name__: "text channel",
