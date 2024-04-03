@@ -118,9 +118,9 @@ class Bot(commands.Bot):
         leon = Mind.get_member(184164823725113344)
         # channel = Mind.channels[0]
         channels = Mind.channels 
-        for channel in channels:
-            logger.info(channel)
-            logger.info(channel.id)
+        # for channel in channels:
+        #     logger.info(channel)
+        #     logger.info(channel.id)
 
         channel = Mind.get_channel(1113650739160555582)
             
